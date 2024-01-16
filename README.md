@@ -62,6 +62,5 @@ To test the project with [websocket Tester](https://piehost.com/socketio-tester)
 9. Test the data passing through by sending and receiving messages between the client (Socket.IO Tester) and the server.
 
 ## Additional Information
-[DEMO](https://www.loom.com/share/c076a68cfacf491d8bf6d492d85610b0)
 
 This is a test project done by @kapil303196 for Andrei! 
