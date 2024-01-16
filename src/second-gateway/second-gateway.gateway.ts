@@ -6,7 +6,6 @@ import {
   MessageBody,
   ConnectedSocket,
   WebSocketServer,
-  OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
@@ -14,9 +13,7 @@ import { Server, WebSocket } from 'ws';
 import { GatewaysService } from '../services/gateways.service'; // Import the service
 
 @WebSocketGateway(3002)
-export class SecondGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class SecondGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -24,13 +21,8 @@ export class SecondGateway
     @Inject(forwardRef(() => GatewaysService))
     private gatewaysService: GatewaysService,
   ) {}
-  afterInit(server: Server) {
-    console.log("SecondGateway initialized")
-    // this.gatewaysService.setSecondGateway(server);
-  }
 
   handleConnection(client: WebSocket, ...args: any[]) {
-    console.log(`Client connected 3002: ${client}`);
     client.send('Welcome to the WebSocket server 3002!');
   }
 
@@ -39,14 +31,12 @@ export class SecondGateway
   }
 
   @SubscribeMessage('message')
-  onMessage(@ConnectedSocket() client: WebSocket, @MessageBody() data: any): void {
-    console.log(`Received message 3002: ${data}`);
-    this.gatewaysService.sendMessageToFirstGateway(`From SecondGateway: ${data}`);
+  onMessage(
+    @ConnectedSocket() client: WebSocket,
+    @MessageBody() data: any,
+  ): void {
+    this.gatewaysService.sendMessageToFirstGateway(
+      `From SecondGateway: ${data}`,
+    );
   }
-
-  getServer(): Server {
-    return this.server;
-  }
-
-  // Rest of your methods...
 }

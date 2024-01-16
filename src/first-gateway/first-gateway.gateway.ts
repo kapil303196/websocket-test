@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-// first-gateway.gateway.ts
 import { forwardRef, Inject } from '@nestjs/common';
 
 import {
@@ -8,7 +6,6 @@ import {
   MessageBody,
   ConnectedSocket,
   WebSocketServer,
-  OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
@@ -16,9 +13,7 @@ import { Server, WebSocket } from 'ws';
 import { GatewaysService } from '../services/gateways.service'; // Import the service
 
 @WebSocketGateway(3001)
-export class FirstGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class FirstGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -26,13 +21,8 @@ export class FirstGateway
     @Inject(forwardRef(() => GatewaysService))
     private gatewaysService: GatewaysService,
   ) {}
-  afterInit(server: Server) {
-    console.log("Gateway afterInit called");
-    // this.gatewaysService.setFirstGateway(server);
-  }
 
   handleConnection(client: WebSocket, ...args: any[]) {
-    console.log(`Client connected 3001: ${client}`);
     client.send('Welcome to the WebSocket server 3001!');
   }
 
@@ -45,11 +35,8 @@ export class FirstGateway
     @ConnectedSocket() client: WebSocket,
     @MessageBody() data: any,
   ): void {
-    console.log(`Received message 3001: ${data}`);
-    this.gatewaysService.sendMessageToSecondGateway(`From FirstGateway: ${data}`);
-  }
-
-  getServer(): Server {
-    return this.server;
+    this.gatewaysService.sendMessageToSecondGateway(
+      `From FirstGateway: ${data}`,
+    );
   }
 }

@@ -1,6 +1,5 @@
 // gateways.service.ts
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { Server, WebSocket } from 'ws';
 import { FirstGateway } from '../first-gateway/first-gateway.gateway';
 import { SecondGateway } from '../second-gateway/second-gateway.gateway';
 
